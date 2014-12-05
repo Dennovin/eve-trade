@@ -1,10 +1,8 @@
-import tornado.web
 import requests
 
 from Config import Config
 from DB import DB, WalletTransaction, MarketOrder
 from WebHandler import WebHandler
-
 
 class Item(object):
     cached_info = dict()
@@ -14,7 +12,8 @@ class Item(object):
         if type_id not in cls.cached_info:
             req = requests.get(Config.get("item_api"), params={"id": type_id})
             req.raise_for_status()
-            cls.cached_info[type_id] = req.json()[0]
+            items = req.json()
+            cls.cached_info[type_id] = items[0] if len(items) > 0 else None
 
         return cls.cached_info[type_id]
 

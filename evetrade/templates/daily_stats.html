@@ -1,0 +1,45 @@
+{% include "header.html" %}
+
+<div class="section-title">Daily Summary: {{ day }}</div>
+
+<div class="detail">
+  <div class="detail-row">
+    <span class="caption">Total Bought</span>
+    <span class="data numeric">{{ number_format(stats["total_bought"], 2) }} ISK</span>
+  </div>
+
+  <div class="detail-row">
+    <span class="caption">Total Sold</span>
+    <span class="data numeric">{{ number_format(stats["total_sold"], 2) }} ISK</span>
+  </div>
+
+  <div class="detail-row">
+    <span class="caption">Profit on Sold Items</span>
+    <span class="data numeric">{{ number_format(stats["profit_on_sold"], 2) }} ISK</span>
+  </div>
+</div>
+
+<div class="table-title">Items Sold</div>
+<table class="data">
+  <tr>
+    <th>Item Name</th>
+    <th>Num. Sold</th>
+    <th>Avg. Sell Price</th>
+    <th>Total Cost</th>
+    <th>Total Profit</th>
+  </tr>
+
+  {% for item in sorted(stats["sold_items"], key=lambda item: (item["total_sold_isk"] - item["total_cost_on_sold"]), reverse=True) %}
+  {% if item["num_sold"] > 0 %}
+  <tr class="data">
+    <td>{{ item["info"]["typeName"] }}</td>
+    <td class="numeric">{{ number_format(item["num_sold"]) }}</td>
+    <td class="numeric">{{ number_format(item["total_sold_isk"] / item["num_sold"], 2) }}</td>
+    <td class="numeric">{{ number_format(item["total_cost_on_sold"], 2) }}</td>
+    <td class="numeric">{{ number_format(item["total_sold_isk"] - item["total_cost_on_sold"], 2) }}</td>
+  </tr>
+  {% end %}
+  {% end %}
+</table>
+
+{% include "footer.html" %}

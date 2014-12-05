@@ -26,6 +26,13 @@ class DB(object):
         Base.prepare(cls.get_engine())
 
     @classmethod
+    def execute(cls, query, params=None):
+        if params is None:
+            params = []
+
+        return cls.get_engine().execute(query, params)
+
+    @classmethod
     def session(cls):
         return cls.Session()
 

@@ -8,19 +8,20 @@ import tornado.options
 import tornado.netutil
 import tornado.web
 
-from evetrade import DB, Config, StaticHandler, ItemStatsHandler
+import evetrade
 
 application = tornado.web.Application([
-        (r"/item-stats/(.*)", ItemStatsHandler),
-        (r"/static/(.*)", StaticHandler),
+        (r"/item-stats/(.*)", evetrade.ItemStatsHandler),
+        (r"/daily-stats/(.*)", evetrade.DailyStatsHandler),
+        (r"/static/(.*)", evetrade.StaticHandler),
         ])
 
 if __name__ == "__main__":
-    Config.add_argument("--listen-address", dest="listen_address", default="localhost", help="Listen address")
-    Config.add_argument("--listen-port", dest="listen_port", default=8000, help="Listen port")
-    Config.add_argument("--unix-socket", dest="unix_socket", default=None, help="Unix socket path")
+    evetrade.Config.add_argument("--listen-address", dest="listen_address", default="localhost", help="Listen address")
+    evetrade.Config.add_argument("--listen-port", dest="listen_port", default=8000, help="Listen port")
+    evetrade.Config.add_argument("--unix-socket", dest="unix_socket", default=None, help="Unix socket path")
 
-    args = Config.parse_args()
+    args = evetrade.Config.parse_args()
 
     if args.unix_socket:
         server = tornado.httpserver.HTTPServer(application)
@@ -29,5 +30,5 @@ if __name__ == "__main__":
     else:
         application.listen(args.listen_port, address=args.listen_address)
 
-    DB.prepare()
+    evetrade.DB.prepare()
     tornado.ioloop.IOLoop.instance().start()
