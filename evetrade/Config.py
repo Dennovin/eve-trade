@@ -16,7 +16,7 @@ class Config(object):
 
     @classmethod
     def add_argument(cls, argname, **opts):
-        args[argname] = opts
+        cls.args[argname] = opts
 
     @classmethod
     def parse_args(cls):
@@ -34,7 +34,7 @@ class Config(object):
             logging.basicConfig(filename=args.logfile)
 
         if args.config_file:
-            Config.config_file = args.config_file
+            cls.config_file = args.config_file
 
         return args
 

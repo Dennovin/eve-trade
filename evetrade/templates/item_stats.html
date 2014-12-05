@@ -1,0 +1,87 @@
+{% include "header.html" %}
+
+<div class="section-title">{{ item["info"]["typeName"] }}</div>
+
+<div class="detail">
+  <div class="detail-row">
+    <span class="caption">Total Bought</span>
+    <span class="data numeric">{{ number_format(item["total_bought_isk"], 2) }} ISK</span>
+    <span class="data numeric">{{ item["total_bought"] }} items</span>
+  </div>
+
+  <div class="detail-row">
+    <span class="caption">Total Sold</span>
+    <span class="data numeric">{{ number_format(item["total_sold_isk"], 2) }} ISK</span>
+    <span class="data numeric">{{ item["total_sold"] }} items</span>
+  </div>
+
+  {% if item["total_sold"] > 0 %}
+  <div class="detail-row">
+    <span class="caption">Actual Profit</span>
+    <span class="data numeric">{{ number_format(item["actual_profit"], 2) }} ISK</span>
+  </div>
+
+  <div class="detail-row">
+    <span class="caption">Profit on Sold</span>
+    <span class="data numeric">{{ number_format(item["profit_on_sold"], 2) }} ISK</span>
+  </div>
+
+  <div class="detail-row">
+    <span class="caption">Projected Profit (Current Sell Orders)</span>
+    <span class="data numeric">{{ number_format(item["projected_profit_sell_orders"], 2) }} ISK</span>
+  </div>
+
+  <div class="detail-row">
+    <span class="caption">Projected Profit (All Purchased)</span>
+    <span class="data numeric">{{ number_format(item["projected_profit_all"], 2) }} ISK</span>
+  </div>
+  {% end %}
+</div>
+
+{% if len(item["buy_orders"]) > 0 %}
+<div class="table-title">Buy Orders</div>
+<table class="data">
+  <tr>
+    <th>Date Issued</th>
+    <th>Price</th>
+    <th>Total Quantity</th>
+    <th>Remaining Quantity</th>
+    <th>Status</th>
+  </tr>
+
+  {% for order in item["buy_orders"] %}
+  <tr class="data">
+    <td>{{ order.issued_date }}</td>
+    <td class="numeric">{{ number_format(order.price, 2) }}</td>
+    <td class="numeric">{{ number_format(order.vol_entered) }}</td>
+    <td class="numeric">{{ number_format(order.vol_remaining) }}</td>
+    <td>{{ order.state_string }}</td>
+  </tr>
+  {% end %}
+</table>
+{% end %}
+
+{% if len(item["sell_orders"]) > 0 %}
+<div class="table-title">Sell Orders</div>
+<table class="data">
+  <tr>
+    <th>Date Issued</th>
+    <th>Price</th>
+    <th>Total Quantity</th>
+    <th>Remaining Quantity</th>
+    <th>Status</th>
+  </tr>
+
+  {% for order in item["sell_orders"] %}
+  <tr class="data">
+    <td>{{ order.issued_date }}</td>
+    <td class="numeric">{{ number_format(order.price, 2) }}</td>
+    <td class="numeric">{{ number_format(order.vol_entered) }}</td>
+    <td class="numeric">{{ number_format(order.vol_remaining) }}</td>
+    <td>{{ order.state_string }}</td>
+  </tr>
+  {% end %}
+</table>
+{% end %}
+
+{% include "footer.html" %}

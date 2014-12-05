@@ -1,0 +1,67 @@
+@import url("http://fonts.googleapis.com/css?family=Droid+Sans+Mono|Roboto");
+
+body {
+    font-family: "Roboto", sans-serif;
+}
+
+div.section-title {
+    font-size: 120%;
+    font-weight: bold;
+    margin: 0 0 1em 3em;
+}
+
+div.detail {
+    display: table-row-group;
+}
+
+div.detail-row {
+    display: table-row;
+}
+
+div.detail-row span {
+    display: table-cell;
+}
+
+div.detail-row span.data {
+    padding: 0 1em;
+}
+
+div.detail-row span.data.numeric {
+    text-align: right;
+}
+
+div.table-title {
+    font-size: 110%;
+    margin: 1em 0 2px 1em;
+    font-weight: bold;
+}
+
+table.data {
+    border-collapse: collapse;
+}
+
+table.data th {
+    background-color: black;
+    color: white;
+    font-weight: bold;
+    border: 1px solid black;
+    padding: 2px 1em;
+}
+
+table.data td {
+    border: 1px solid black;
+    padding: 2px 1em;
+}
+
+table.data td.numeric {
+    font-family: "Droid Sans Mono", "Courier New", monospace;
+    text-align: right;
+}
+
+table.data tr:nth-child(even) {
+    background-color: #dfdfef;
+}
+
+table.data tr:nth-child(odd) {
+    background-color: #efefff;
+}

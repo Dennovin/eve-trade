@@ -59,6 +59,13 @@ class WalletTransaction(Base):
 class MarketOrder(Base):
     __tablename__ = "market_orders"
 
+    STATE_ACTIVE = 0
+    STATE_CLOSED = 1
+    STATE_COMPLETE = 2
+    STATE_CANCELLED = 3
+    STATE_PENDING = 4
+    STATE_CHAR_DELETED = 5
+
     @classmethod
     def fetch_from_api(cls, key):
         rows = EVEAPI.api_call("char/MarketOrders", key)
@@ -70,7 +77,7 @@ class MarketOrder(Base):
             obj.issued_date = row.get("issued")
             obj.type_id = row.get("typeID")
             obj.price = row.get("price")
-            obj.order_type = ("buy" if row.get("bid") else "sell")
+            obj.order_type = ("buy" if row.get("bid") == "1" else "sell")
             obj.station_id = row.get("stationID")
             obj.range = row.get("range")
             obj.vol_entered = row.get("volEntered")
@@ -78,4 +85,18 @@ class MarketOrder(Base):
             obj.order_state = row.get("orderState")
 
             yield obj
+
+    @property
+    def state_string(self):
+        strs = {
+            self.STATE_ACTIVE: "Active",
+            self.STATE_CLOSED: "Closed",
+            self.STATE_COMPLETE: "Completed/Expired",
+            self.STATE_CANCELLED: "Cancelled",
+            self.STATE_PENDING: "Pending",
+            self.STATE_CHAR_DELETED: "Deleted",
+            }
+
+        return strs[self.order_state]
+
 

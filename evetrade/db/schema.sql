@@ -27,6 +27,9 @@ CREATE TABLE wallet_transactions (
     transaction_type integer
 );
 
+CREATE INDEX ON wallet_transactions(type_id);
+CREATE INDEX ON wallet_transactions(transaction_date);
+
 CREATE RULE wallet_transactions_ignore_duplicates AS
 ON INSERT TO wallet_transactions WHERE EXISTS (SELECT 1 FROM wallet_transactions WHERE (wallet_transactions.transaction_id = new.transaction_id))
 DO INSTEAD NOTHING;
