@@ -1,0 +1,4 @@
+{
+    "db_url": "postgresql+psycopg2://trade@/trade",
+    "db_args": {}
+}

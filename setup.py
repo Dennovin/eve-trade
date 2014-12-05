@@ -14,6 +14,9 @@ setup(
         "evetrade": ["static/*", "templates/*", "db/*"],
         },
     install_requires=[
+        "psycopg2 >= 2.5.4",
+        "requests >= 2.2.1",
+        "sqlalchemy >= 0.9.8",
         "tornado >= 4.0.2",
         ],
     scripts=[
