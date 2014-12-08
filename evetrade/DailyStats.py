@@ -30,6 +30,9 @@ class Day(object):
                 items[txn.type_id]["total_sold_isk"] += txn.price * txn.quantity
                 items[txn.type_id]["num_sold"] += txn.quantity
 
+        if len(items) == 0:
+            return items
+
         buy_price_query = """
         SELECT transaction_date, type_id, quantity, SUM(quantity) OVER (PARTITION BY type_id ORDER BY transaction_date desc) AS total_qty, price
         FROM wallet_transactions
@@ -56,12 +59,13 @@ class Day(object):
         day = datetime.strptime(datestring, "%Y-%m-%d")
         txns = cls.transactions(day)
         items = cls.item_stats(day, txns)
-        sold_items = [i for i in items.values() if i["num_sold"] > 0]
+        sold_items = [i for i in items.values() if i["num_sold"] > 0 and "total_cost_on_sold" in i]
 
         bought = [i for i in txns if i.transaction_type == 1]
         sold = [i for i in txns if i.transaction_type == 0]
 
         stats = {
+            "datestring": datestring,
             "txns": txns,
             "items": items,
             "sold_items": sold_items,
@@ -69,7 +73,7 @@ class Day(object):
 
         stats["total_bought"] = sum([i.price * i.quantity for i in bought])
         stats["total_sold"] = sum([i.price * i.quantity for i in sold])
-        stats["profit_on_sold"] = sum([i["total_sold_isk"] - i["total_cost_on_sold"] for i in sold_items])
+        stats["profit_on_sold"] = sum([i["total_sold_isk"] - i["total_cost_on_sold"] for i in sold_items if "total_cost_on_sold" in i])
 
         return stats
 

@@ -4,6 +4,10 @@ body {
     font-family: "Roboto", sans-serif;
 }
 
+a {
+    color: #3f3fbf;
+}
+
 div.section-title {
     font-size: 140%;
     font-weight: bold;
@@ -58,10 +62,20 @@ table.data td.numeric {
     text-align: right;
 }
 
-table.data tr:nth-child(even) {
+table.data tr.data:nth-child(even) {
     background-color: #dfdfef;
 }
 
-table.data tr:nth-child(odd) {
+table.data tr.data:nth-child(odd) {
     background-color: #efefff;
+}
+
+table.data tr.summary {
+    font-weight: bold;
+    background-color: #4f4f6f;
+    color: white;
+}
+
+table.data tr.summary td.numeric {
+    font-weight: normal;
 }

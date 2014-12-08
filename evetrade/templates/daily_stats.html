@@ -32,7 +32,7 @@
   {% for item in sorted(stats["sold_items"], key=lambda item: (item["total_sold_isk"] - item["total_cost_on_sold"]), reverse=True) %}
   {% if item["num_sold"] > 0 %}
   <tr class="data">
-    <td>{{ item["info"]["typeName"] }}</td>
+    <td><a href="/item-stats/{{ item["info"]["typeID"] }}">{{ item["info"]["typeName"] }}</a></td>
     <td class="numeric">{{ number_format(item["num_sold"]) }}</td>
     <td class="numeric">{{ number_format(item["total_sold_isk"] / item["num_sold"], 2) }}</td>
     <td class="numeric">{{ number_format(item["total_cost_on_sold"], 2) }}</td>

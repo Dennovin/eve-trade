@@ -11,6 +11,7 @@ import tornado.web
 import evetrade
 
 application = tornado.web.Application([
+        (r"/", evetrade.HomepageHandler),
         (r"/item-stats/(.*)", evetrade.ItemStatsHandler),
         (r"/daily-stats/(.*)", evetrade.DailyStatsHandler),
         (r"/static/(.*)", evetrade.StaticHandler),

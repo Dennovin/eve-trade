@@ -6,13 +6,13 @@
   <div class="detail-row">
     <span class="caption">Total Bought</span>
     <span class="data numeric">{{ number_format(item["total_bought_isk"], 2) }} ISK</span>
-    <span class="data numeric">{{ item["total_bought"] }} items</span>
+    <span class="data numeric">{{ number_format(item["total_bought"]) }} items</span>
   </div>
 
   <div class="detail-row">
     <span class="caption">Total Sold</span>
     <span class="data numeric">{{ number_format(item["total_sold_isk"], 2) }} ISK</span>
-    <span class="data numeric">{{ item["total_sold"] }} items</span>
+    <span class="data numeric">{{ number_format(item["total_sold"]) }} items</span>
   </div>
 
   {% if item["total_sold"] > 0 %}

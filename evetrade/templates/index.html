@@ -1,0 +1,31 @@
+{% include "header.html" %}
+
+<div class="section-title">Trade Summary</div>
+
+<div class="table-title">Last 7 Days:</div>
+<table class="data">
+  <tr>
+    <th>Day</th>
+    <th>Total Bought</th>
+    <th>Total Sold</th>
+    <th>Profit on Sold</th>
+  </tr>
+
+  {% for day in stats %}
+  <tr class="data">
+    <td><a href="/daily-stats/{{ day["datestring"] }}">{{ day["datestring"] }}</a></td>
+    <td class="numeric">{{ number_format(day["total_bought"], 2) }}</td>
+    <td class="numeric">{{ number_format(day["total_sold"], 2) }}</td>
+    <td class="numeric">{{ number_format(day["profit_on_sold"], 2) }}</td>
+  </tr>
+  {% end %}
+
+  <tr class="summary">
+    <td>Totals</td>
+    <td class="numeric">{{ number_format(sum([i["total_bought"] for i in stats]), 2) }}</td>
+    <td class="numeric">{{ number_format(sum([i["total_sold"] for i in stats]), 2) }}</td>
+    <td class="numeric">{{ number_format(sum([i["profit_on_sold"] for i in stats]), 2) }}</td>
+  </tr>
+</table>
+
+{% include "footer.html" %}
