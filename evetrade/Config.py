@@ -1,6 +1,7 @@
 import argparse
 import logging
 import os
+import pkg_resources
 import simplejson
 
 class Config(object):
@@ -52,3 +53,7 @@ class Config(object):
         with open(cls.config_file, "r") as fh:
             contents = fh.read()
             cls.settings = simplejson.loads(contents)
+
+    @classmethod
+    def resource_filename(cls, fn):
+        return pkg_resources.resource_filename(__name__, fn)
