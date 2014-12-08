@@ -33,11 +33,14 @@ class Day(object):
         buy_price_query = """
         SELECT transaction_date, type_id, quantity, SUM(quantity) OVER (PARTITION BY type_id ORDER BY transaction_date desc) AS total_qty, price
         FROM wallet_transactions
-        WHERE type_id IN ({}) AND transaction_type = 1
+        WHERE type_id IN ({}) AND transaction_type = 1 AND transaction_date < %s
         ORDER BY type_id, transaction_date desc
         """
 
-        for row in DB.execute(buy_price_query.format(",".join(["%s" for i in items])), items.keys()):
+        params = items.keys()
+        params.append(day + timedelta(days=1))
+
+        for row in DB.execute(buy_price_query.format(",".join(["%s" for i in items])), params):
             if row["total_qty"] - row["quantity"] <= items[row["type_id"]]["num_sold"]:
                 num_counted = row["quantity"] - max(row["total_qty"] - items[row["type_id"]]["num_sold"], 0)
                 items[row["type_id"]]["total_cost_on_sold"] = items[row["type_id"]].get("total_cost_on_sold", 0) + row["price"] * num_counted
@@ -73,6 +76,9 @@ class Day(object):
 
 class DailyStatsHandler(WebHandler):
     def get(self, datestring):
+        if datestring == "today":
+            datestring = datetime.strftime(datetime.utcnow(), "%Y-%m-%d")
+
         day_stats = Day.stats(datestring)
         #self.write(day_stats.__repr__())
         self.write(self.loader.load("daily_stats.html").generate(day=datestring, stats=day_stats, number_format=self.number_format))
