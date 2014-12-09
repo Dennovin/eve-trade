@@ -8,16 +8,16 @@ from ItemStats import Item
 
 class Day(object):
     @classmethod
-    def transactions(cls, day):
+    def transactions(cls, session, day):
         query_filter = and_(WalletTransaction.transaction_date >= day, WalletTransaction.transaction_date < day + timedelta(days=1))
-        return DB.session().query(WalletTransaction).filter(query_filter).order_by(WalletTransaction.transaction_date).all()
+        return session.query(WalletTransaction).filter(query_filter).order_by(WalletTransaction.transaction_date).all()
 
     @classmethod
-    def item_stats(cls, day, txns=None):
+    def item_stats(cls, session, day, txns=None):
         items = dict()
 
         if txns is None:
-            txns = cls.transactions(day)
+            txns = cls.transactions(session, day)
 
         for txn in txns:
             if txn.type_id not in items:
@@ -55,10 +55,10 @@ class Day(object):
         return items
 
     @classmethod
-    def stats(cls, datestring):
+    def stats(cls, session, datestring):
         day = datetime.strptime(datestring, "%Y-%m-%d")
-        txns = cls.transactions(day)
-        items = cls.item_stats(day, txns)
+        txns = cls.transactions(session, day)
+        items = cls.item_stats(session, day, txns)
         sold_items = [i for i in items.values() if i["num_sold"] > 0 and "total_cost_on_sold" in i]
 
         bought = [i for i in txns if i.transaction_type == 1]
@@ -83,6 +83,7 @@ class DailyStatsHandler(WebHandler):
         if datestring == "today":
             datestring = datetime.strftime(datetime.utcnow(), "%Y-%m-%d")
 
-        day_stats = Day.stats(datestring)
-        #self.write(day_stats.__repr__())
+        day_stats = Day.stats(self.session, datestring)
+
         self.write(self.loader.load("daily_stats.html").generate(day=datestring, stats=day_stats, number_format=self.number_format))
+        self.finish()

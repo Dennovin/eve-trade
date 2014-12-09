@@ -4,6 +4,7 @@ import tornado.template
 import tornado.web
 
 from Config import Config
+from DB import DB
 
 class WebHandler(tornado.web.RequestHandler):
     loader = None
@@ -17,10 +18,13 @@ class WebHandler(tornado.web.RequestHandler):
             WebHandler.loader = tornado.template.Loader(pkg_resources.resource_filename(__name__, "templates"))
 
         self.loader = WebHandler.loader
+        self.session = DB.session()
 
     def number_format(self, number, decimals=0):
         return locale.format("%.0{}f".format(decimals), number, grouping=True)
 
+    def on_finish(self):
+        self.session.close()
 
 class StaticHandler(tornado.web.StaticFileHandler):
     def initialize(self):

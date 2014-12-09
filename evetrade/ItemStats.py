@@ -18,17 +18,17 @@ class Item(object):
         return cls.cached_info[type_id]
 
     @classmethod
-    def transactions_with(cls, type_id):
-        return DB.session().query(WalletTransaction).filter(WalletTransaction.type_id == type_id).order_by(WalletTransaction.transaction_date).all()
+    def transactions_with(cls, session, type_id):
+        return session.query(WalletTransaction).filter(WalletTransaction.type_id == type_id).order_by(WalletTransaction.transaction_date).all()
 
     @classmethod
-    def orders_with(cls, type_id):
-        return DB.session().query(MarketOrder).filter(MarketOrder.type_id == type_id).order_by(MarketOrder.issued_date).all()
+    def orders_with(cls, session, type_id):
+        return session.query(MarketOrder).filter(MarketOrder.type_id == type_id).order_by(MarketOrder.issued_date).all()
 
     @classmethod
-    def stats(cls, type_id):
-        txns = cls.transactions_with(type_id)
-        orders = cls.orders_with(type_id)
+    def stats(cls, session, type_id):
+        txns = cls.transactions_with(session, type_id)
+        orders = cls.orders_with(session, type_id)
         info = cls.info(type_id)
 
         bought = [i for i in txns if i.transaction_type == 1]
@@ -72,8 +72,8 @@ class Item(object):
 
 class ItemStatsHandler(WebHandler):
     def get(self, type_id):
-        item_stats = Item.stats(type_id)
+        item_stats = Item.stats(self.session, type_id)
 
         self.write(self.loader.load("item_stats.html").generate(item=item_stats, number_format=self.number_format))
-
+        self.finish()
 
