@@ -2,6 +2,21 @@
 
 <div class="section-title">Trade Summary</div>
 
+<div class="table-title">Current Orders:</div>
+<div class="detail">
+  <div class="detail-row">
+    <span class="caption">Buy Orders</span>
+    <span class="data numeric">{{ number_format(order_totals["total_buy"], 2) }} ISK</span>
+    <span class="data numeric">{{ number_format(order_totals["num_buy"]) }} open orders</span>
+  </div>
+
+  <div class="detail-row">
+    <span class="caption">Sell Orders</span>
+    <span class="data numeric">{{ number_format(order_totals["total_sell"], 2) }} ISK</span>
+    <span class="data numeric">{{ number_format(order_totals["num_sell"]) }} open orders</span>
+  </div>
+</div>
+
 <div class="table-title">Last 7 Days:</div>
 <table class="data">
   <tr>

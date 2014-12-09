@@ -4,6 +4,7 @@ import psycopg2.extras
 
 import tornado.httpserver
 import tornado.ioloop
+import tornado.log
 import tornado.options
 import tornado.netutil
 import tornado.web
@@ -18,6 +19,8 @@ application = tornado.web.Application([
         ])
 
 if __name__ == "__main__":
+    tornado.log.enable_pretty_logging()
+
     evetrade.Config.add_argument("--listen-address", dest="listen_address", default="localhost", help="Listen address")
     evetrade.Config.add_argument("--listen-port", dest="listen_port", default=8000, help="Listen port")
     evetrade.Config.add_argument("--unix-socket", dest="unix_socket", default=None, help="Unix socket path")
