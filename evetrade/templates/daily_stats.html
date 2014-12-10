@@ -25,7 +25,7 @@
     <th>Item Name</th>
     <th>Num. Sold</th>
     <th>Avg. Sell Price</th>
-    <th>Total Cost</th>
+    <th>Avg. Cost</th>
     <th>Total Profit</th>
   </tr>
 
@@ -35,7 +35,7 @@
     <td><a href="/item-stats/{{ item["info"]["typeID"] }}">{{ item["info"]["typeName"] }}</a></td>
     <td class="numeric">{{ number_format(item["num_sold"]) }}</td>
     <td class="numeric">{{ number_format(item["total_sold_isk"] / item["num_sold"], 2) }}</td>
-    <td class="numeric">{{ number_format(item["total_cost_on_sold"], 2) }}</td>
+    <td class="numeric">{{ number_format(item["total_cost_on_sold"] / item["num_sold"], 2) }}</td>
     <td class="numeric">{{ number_format(item["total_sold_isk"] - item["total_cost_on_sold"], 2) }}</td>
   </tr>
   {% end %}
