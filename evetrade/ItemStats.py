@@ -69,6 +69,52 @@ class Item(object):
 
         return stats
 
+    @classmethod
+    def summary(cls):
+        txn_query = """
+        SELECT type_id,
+          SUM(CASE WHEN transaction_type = 1 THEN quantity ELSE 0 END) AS total_bought,
+          SUM(CASE WHEN transaction_type = 1 THEN quantity * price ELSE 0 END) AS total_bought_isk,
+          SUM(CASE WHEN transaction_type = 0 THEN quantity ELSE 0 END) AS total_sold,
+          SUM(CASE WHEN transaction_type = 0 THEN quantity * price ELSE 0 END) AS total_sold_isk,
+          MAX(CASE WHEN transaction_type = 1 THEN transaction_date ELSE NULL END) AS last_buy,
+          MAX(CASE WHEN transaction_type = 0 THEN transaction_date ELSE NULL END) AS last_sell
+        FROM wallet_transactions
+        GROUP BY type_id
+        """
+
+        order_query = """
+        SELECT type_id,
+          SUM(CASE WHEN order_type = 'buy' THEN vol_remaining ELSE 0 END) AS total_buy_orders,
+          SUM(CASE WHEN order_type = 'buy' THEN vol_remaining * price ELSE 0 END) AS total_buy_orders_isk,
+          SUM(CASE WHEN order_type = 'sell' THEN vol_remaining ELSE 0 END) AS total_sell_orders,
+          SUM(CASE WHEN order_type = 'sell' THEN vol_remaining * price ELSE 0 END) AS total_sell_orders_isk
+        FROM market_orders
+        WHERE order_state = %s
+        GROUP BY type_id
+        """
+
+        items = dict()
+
+        for row in DB.execute(txn_query):
+            items[row["type_id"]] = dict()
+            for k in ["total_bought", "total_bought_isk", "total_sold", "total_sold_isk", "last_buy", "last_sell"]:
+                items[row["type_id"]][k] = row[k]
+
+        for row in DB.execute(order_query, [MarketOrder.STATE_ACTIVE]):
+            items.setdefault(row["type_id"], dict())
+            for k in ["total_buy_orders", "total_buy_orders_isk", "total_sell_orders", "total_sell_orders_isk"]:
+                items[row["type_id"]][k] = row[k]
+
+        for type_id, item in items.items():
+            item["info"] = cls.info(type_id)
+            item["avg_sell"] = item["total_sold_isk"] / item["total_sold"] if item.get("total_sold", 0) > 0 else 0
+            item["avg_buy"] = item["total_bought_isk"] / item["total_bought"] if item.get("total_bought", 0) > 0 else 0
+            item["actual_profit"] = item.get("total_sold_isk", 0) - item.get("total_bought_isk", 0)
+            item["profit_on_sold"] = (item["avg_sell"] - item["avg_buy"]) * item.get("total_sold", 0)
+
+        return items
+
 
 class ItemStatsHandler(WebHandler):
     def get(self, type_id):
@@ -77,3 +123,10 @@ class ItemStatsHandler(WebHandler):
         self.write(self.loader.load("item_stats.html").generate(item=item_stats, number_format=self.number_format))
         self.finish()
 
+
+class ItemSummaryHandler(WebHandler):
+    def get(self):
+        items = Item.summary()
+
+        self.write(self.loader.load("item_summary.html").generate(items=items.values(), number_format=self.number_format))
+        self.finish()

@@ -1,0 +1,35 @@
+{% include "header.html" %}
+
+<div class="section-title">Item Summary</div>
+
+<table class="data">
+  <tr>
+    <th>Item</th>
+    <th># Bought</th>
+    <th># Sold</th>
+    <th>Total Profit</th>
+    <th>Profit on Sold</th>
+    <th># Buy Orders</th>
+    <th># Sell Orders</th>
+    <th>Last Bought</th>
+    <th>Last Sold</th>
+  </tr>
+
+  {% for item in items %}
+  <tr class="data">
+    <td>{{ item["info"]["typeName"] }}</td>
+    <td class="numeric">{{ number_format(item.get("total_bought", 0)) }}</td>
+    <td class="numeric">{{ number_format(item.get("total_sold", 0)) }}</td>
+    <td class="numeric">{{ number_format(item.get("actual_profit", 0), 2) }}</td>
+    <td class="numeric">{{ number_format(item.get("profit_on_sold", 0), 2) }}</td>
+    <td class="numeric">{{ number_format(item.get("total_buy_orders", 0)) }}</td>
+    <td class="numeric">{{ number_format(item.get("total_sell_orders", 0)) }}</td>
+    <td class="date">{{ item.get("last_buy", "None") }}</td>
+    <td class="date">{{ item.get("last_sell", "None") }}</td>
+  </tr>
+  {% end %}
+</table>
+
+{% include "footer.html" %}
+
+
