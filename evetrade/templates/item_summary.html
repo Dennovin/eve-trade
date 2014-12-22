@@ -15,7 +15,7 @@
     <th>Last Sold</th>
   </tr>
 
-  {% for item in items %}
+  {% for item in sorted(items, key=lambda item: item.get("profit_on_sold", 0), reverse=True) %}
   <tr class="data">
     <td>{{ item["info"]["typeName"] }}</td>
     <td class="numeric">{{ number_format(item.get("total_bought", 0)) }}</td>
