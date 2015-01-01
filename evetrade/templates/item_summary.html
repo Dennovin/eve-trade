@@ -17,7 +17,7 @@
 
   {% for item in sorted(items, key=lambda item: item.get("profit_on_sold", 0), reverse=True) %}
   <tr class="data">
-    <td>{{ item["info"]["typeName"] }}</td>
+    <td><a href="/item-stats/{{ item["info"]["typeID"] }}">{{ item["info"]["typeName"] }}</a></td>
     <td class="numeric">{{ number_format(item.get("total_bought", 0)) }}</td>
     <td class="numeric">{{ number_format(item.get("total_sold", 0)) }}</td>
     <td class="numeric">{{ number_format(item.get("actual_profit", 0), 2) }}</td>
