@@ -17,7 +17,7 @@
   </div>
 </div>
 
-<div class="table-title">Last 7 Days:</div>
+<div class="table-title">Last {{ len(stats["days"]) }} Days:</div>
 <table class="data">
   <tr>
     <th>Day</th>
@@ -26,7 +26,7 @@
     <th>Profit on Sold</th>
   </tr>
 
-  {% for day in stats %}
+  {% for day in stats["days"] %}
   <tr class="data">
     <td><a href="/daily-stats/{{ day["datestring"] }}">{{ day["datestring"] }}</a></td>
     <td class="numeric">{{ number_format(day["total_bought"], 2) }}</td>
@@ -37,9 +37,36 @@
 
   <tr class="summary">
     <td>Totals</td>
-    <td class="numeric">{{ number_format(sum([i["total_bought"] for i in stats]), 2) }}</td>
-    <td class="numeric">{{ number_format(sum([i["total_sold"] for i in stats]), 2) }}</td>
-    <td class="numeric">{{ number_format(sum([i["profit_on_sold"] for i in stats]), 2) }}</td>
+    <td class="numeric">{{ number_format(sum([i["total_bought"] for i in stats["days"]]), 2) }}</td>
+    <td class="numeric">{{ number_format(sum([i["total_sold"] for i in stats["days"]]), 2) }}</td>
+    <td class="numeric">{{ number_format(sum([i["profit_on_sold"] for i in stats["days"]]), 2) }}</td>
+  </tr>
+</table>
+
+<div class="table-title">Last {{ len(stats["weeks"]) }} Weeks:</div>
+
+<table class="data">
+  <tr>
+    <th>Week Starting</th>
+    <th>Total Bought</th>
+    <th>Total Sold</th>
+    <th>Profit on Sold</th>
+  </tr>
+
+  {% for week in stats["weeks"] %}
+  <tr class="data">
+    <td><a href="/weekly-stats/{{ week["datestring"] }}">{{ week["datestring"] }}</a></td>
+    <td class="numeric">{{ number_format(week["total_bought"], 2) }}</td>
+    <td class="numeric">{{ number_format(week["total_sold"], 2) }}</td>
+    <td class="numeric">{{ number_format(week["profit_on_sold"], 2) }}</td>
+  </tr>
+  {% end %}
+
+  <tr class="summary">
+    <td>Totals</td>
+    <td class="numeric">{{ number_format(sum([i["total_bought"] for i in stats["weeks"]]), 2) }}</td>
+    <td class="numeric">{{ number_format(sum([i["total_sold"] for i in stats["weeks"]]), 2) }}</td>
+    <td class="numeric">{{ number_format(sum([i["profit_on_sold"] for i in stats["weeks"]]), 2) }}</td>
   </tr>
 </table>
 
